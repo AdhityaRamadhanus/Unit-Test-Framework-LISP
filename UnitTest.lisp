@@ -1,0 +1,21 @@
+(defvar *test-name* NIL)
+(defmacro with-gensyms ((&rest vars) &body body)
+  `(let ,(loop for name in vars collect `(,name (gensym)))
+     ,@body))
+(defmacro combine-results (&body forms)
+  (with-gensyms (result)
+    `(let ((,result t))
+      ,@(loop for f in forms collect `(unless ,f (setf ,result nil)))
+      ,result)))
+(defmacro check (&body forms)
+  `(combine-results
+    ,@(loop for f in forms collect `(report-result ,f ',f))))
+(defun report-result (result form)
+  (if result 
+      (format t "~c[32m~:[FAIL~;pass~] ... ~a: ~a~c[0m~%" #\ESC result *test-name* form #\ESC)
+      (format t "~c[31m~:[FAIL~;pass~] ... ~a: ~a~c[0m~%" #\ESC result *test-name* form #\ESC))
+  result)
+(defmacro deftest (name parameters &body body)
+  `(defun ,name ,parameters
+    (let ((*test-name* (append *test-name* (list ',name))))
+      ,@body)))
