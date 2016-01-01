@@ -7,5 +7,5 @@ I modified the coloring of test report to make it easier to spot fail testcase
 Examples of how to use this can be found in UnitTestDriver.lisp
 
 Screenshot :
-![Selection_258.png]({{site.baseurl}}/Selection_258.png)
+![Selection_258.png](/Selection_258.png)
 
